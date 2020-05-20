@@ -1,5 +1,6 @@
 #include "nv21FastConverter4RK.h"
 #include <rockchip_rga.h>
+#include <memory>
 #include "LogUtil.h"
 
 nv21FastCvt4RK::nv21FastCvt4RK(int width_color, int height_color, int angle_color, int mirror_color, int width_ir, int height_ir, int angle_ir, int mirror_ir)
@@ -134,32 +135,40 @@ nv21FastCvt4RK::~nv21FastCvt4RK()
 
 int nv21FastCvt4RK::Convert(unsigned char * src_color, unsigned char * dest_color, unsigned char * src_ir, unsigned char * dest_ir)
 {
-	if (handle1)
+	if ((src_color!=NULL) && (dest_color!=NULL))
 	{
-		((RockchipRga *)handle0)->ops->setSrcBufferPtr((RockchipRga *)handle0, src_color);
-		((RockchipRga *)handle1)->ops->setDstBufferPtr((RockchipRga *)handle1, dest_color);
-		((RockchipRga *)handle0)->ops->go(((RockchipRga *)handle0));
-		((RockchipRga *)handle1)->ops->go(((RockchipRga *)handle1));
-	}
-	else
-	{
-		((RockchipRga *)handle0)->ops->setSrcBufferPtr((RockchipRga *)handle0, src_color);
-		((RockchipRga *)handle0)->ops->setDstBufferPtr((RockchipRga *)handle0, dest_color);
-		((RockchipRga *)handle0)->ops->go(((RockchipRga *)handle0));
+		if (handle1)
+		{
+			((RockchipRga *)handle0)->ops->setSrcBufferPtr((RockchipRga *)handle0, src_color);
+			((RockchipRga *)handle1)->ops->setDstBufferPtr((RockchipRga *)handle1, dest_color);
+			((RockchipRga *)handle0)->ops->go(((RockchipRga *)handle0));
+			((RockchipRga *)handle1)->ops->go(((RockchipRga *)handle1));
+			memset(handle4,0,width_dest*height_dest*3);
+		}
+		else
+		{
+			((RockchipRga *)handle0)->ops->setSrcBufferPtr((RockchipRga *)handle0, src_color);
+			((RockchipRga *)handle0)->ops->setDstBufferPtr((RockchipRga *)handle0, dest_color);
+			((RockchipRga *)handle0)->ops->go(((RockchipRga *)handle0));
+		}
 	}
 
 
-	if (handle3)
+	if ((src_ir!=NULL) && (dest_ir!=NULL))
 	{
-		((RockchipRga *)handle2)->ops->setSrcBufferPtr((RockchipRga *)handle2, src_ir);
-		((RockchipRga *)handle3)->ops->setDstBufferPtr((RockchipRga *)handle3, dest_ir);
-		((RockchipRga *)handle2)->ops->go(((RockchipRga *)handle2));
-		((RockchipRga *)handle3)->ops->go(((RockchipRga *)handle3));
-	}
-	else
-	{
-		((RockchipRga *)handle2)->ops->setSrcBufferPtr((RockchipRga *)handle2, src_ir);
-		((RockchipRga *)handle2)->ops->setDstBufferPtr((RockchipRga *)handle2, dest_ir);
-		((RockchipRga *)handle2)->ops->go(((RockchipRga *)handle2));
+		if (handle3)
+		{
+			((RockchipRga *)handle2)->ops->setSrcBufferPtr((RockchipRga *)handle2, src_ir);
+			((RockchipRga *)handle3)->ops->setDstBufferPtr((RockchipRga *)handle3, dest_ir);
+			((RockchipRga *)handle2)->ops->go(((RockchipRga *)handle2));
+			((RockchipRga *)handle3)->ops->go(((RockchipRga *)handle3));
+			memset(handle4,0,width_dest*height_dest*3);
+		}
+		else
+		{
+			((RockchipRga *)handle2)->ops->setSrcBufferPtr((RockchipRga *)handle2, src_ir);
+			((RockchipRga *)handle2)->ops->setDstBufferPtr((RockchipRga *)handle2, dest_ir);
+			((RockchipRga *)handle2)->ops->go(((RockchipRga *)handle2));
+		}
 	}
 }
